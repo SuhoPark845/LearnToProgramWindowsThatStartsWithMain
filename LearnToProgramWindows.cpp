@@ -1,31 +1,15 @@
-﻿// LearnToProgramWindows.cpp : 이 파일에는 'main' 함수가 포함됩니다. 거기서 프로그램 실행이 시작되고 종료됩니다.
-//
-#ifndef UNICODE
+﻿#ifndef UNICODE
 #define UNICODE
 #endif 
 
 #include <windows.h>
-#include <iostream>
-
-// Define a structure to hold some state information.
-struct StateInfo {
-    // ... (struct members not shown)
-};
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-inline StateInfo* GetAppState(HWND hwnd);
-void OnSize(HWND hwnd, UINT flag, int width, int height);
 
 int main()
 {
     // Register the window class.
     const wchar_t CLASS_NAME[] = L"Sample Window Class";
-    StateInfo* pState = new (std::nothrow) StateInfo;
-
-    if (pState == NULL)
-    {
-        return 0;
-    }
 
     WNDCLASS wc = { };
 
@@ -49,7 +33,7 @@ int main()
         NULL,           // Parent window    
         NULL,           // Menu
         wc.hInstance,   // Instance handle
-        pState          // Additional application data
+        NULL          // Additional application data
     );
 
     if (hwnd == NULL)
@@ -71,18 +55,6 @@ int main()
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    StateInfo* pState;
-    if (uMsg == WM_CREATE)
-    {
-        CREATESTRUCT* pCreate = reinterpret_cast<CREATESTRUCT*>(lParam);
-        pState = reinterpret_cast<StateInfo*>(pCreate->lpCreateParams);
-        SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)pState);
-    }
-    else
-    {
-        pState = GetAppState(hwnd);
-    }
-
 	switch (uMsg)
 	{
 	case WM_DESTROY:
@@ -102,36 +74,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     }
 		return 0;
 
-	case WM_SIZE:
-    {
-        int width = LOWORD(lParam);  // Macro to get the low-order word.
-        int height = HIWORD(lParam); // Macro to get the high-order word.
-
-        // Respond to the message:
-        OnSize(hwnd, (UINT)wParam, width, height);
-    }
-		break;
-
-	case WM_CLOSE:
-		if (MessageBox(hwnd, L"Really quit?", L"My application", MB_OKCANCEL) == IDOK)
-		{
-			DestroyWindow(hwnd);
-		}
-        // Else: User canceled. Do nothing.
-		return 0;
-
 	}
 	return DefWindowProc(hwnd, uMsg, wParam, lParam);
-}
-
-inline StateInfo* GetAppState(HWND hwnd)
-{
-    LONG_PTR ptr = GetWindowLongPtr(hwnd, GWLP_USERDATA);
-    StateInfo* pState = reinterpret_cast<StateInfo*>(ptr);
-    return pState;
-}
-
-void OnSize(HWND hwnd, UINT flag, int width, int height)
-{
-    // Handle resizing
 }
