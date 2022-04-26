@@ -1,4 +1,4 @@
-# LearnToProgramWindows
+# LearnToProgramWindowsThatStartsWithMain
 
 https://docs.microsoft.com/en-us/windows/win32/learnwin32/your-first-windows-program   
 The code presented in the link above unconditionally starts with wWinMain.   
